@@ -18,6 +18,8 @@ import {
   requestPermissionAndToken,
   listenForegroundMessages,
 } from "@/public/firebase-messaging";
+import { Suspense } from "react";
+import ChatContent from "./ChatContent";
 
 // FOR 1-1 CHATS
 const getChatId = (uid1: string, uid2: string) => {
@@ -48,22 +50,22 @@ export default function ChatPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
-  const searchParams = useSearchParams();
-  const uid = searchParams.get("uid");
+  // const searchParams = useSearchParams();
+  // const uid = searchParams.get("uid");
 
   // ✅ FIX: mounted state
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (uid && users.length > 0) {
-      const foundUser = users.find((u) => u.uid === uid);
-      if (foundUser && foundUser.uid !== selectedUser?.uid) {
-        setSelectedUser(foundUser);
-      }
-    }
-  }, [uid, users]);
+  // useEffect(() => {
+  //   if (uid && users.length > 0) {
+  //     const foundUser = users.find((u) => u.uid === uid);
+  //     if (foundUser && foundUser.uid !== selectedUser?.uid) {
+  //       setSelectedUser(foundUser);
+  //     }
+  //   }
+  // }, [uid, users]);
 
   // AUTH GUARD
   useEffect(() => {
@@ -259,7 +261,16 @@ export default function ChatPage() {
   // }, []);
 
   return (
+
+    
     <div className="flex flex-col md:flex-row bg-green-300">
+    <Suspense fallback={null}>
+  <ChatContent 
+    setSelectedUser={setSelectedUser}
+    users={users}
+    selectedUser={selectedUser}
+  />
+</Suspense>
       
       {/* LEFT SIDE */}
 <div className="w-full md:w-1/4 bg-gray-200 p-3 overflow-y-auto sticky top-0  md:h-screen">  
@@ -282,6 +293,8 @@ export default function ChatPage() {
             </div>
           ))}
       </div>
+
+      
 
       {/* RIGHT SIDE */}
       <div className="flex flex-col flex-1 h-screen overflow-hidden bg-green-300">

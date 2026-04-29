@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# environment variables
+.env.local
+
+# firebase service account keys
+*.json
+
+# next build files
+.next
+
+# node modules
+node_modules

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import admin from "firebase-admin";
 
-const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT;
+//const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT;
 //const fcmServerKey = process.env.FCM_SERVER_KEY;
 // let adminAvailable = false;
 
@@ -17,14 +17,24 @@ const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT;
 let adminAvailable = false;
 
 try {
-  if (!admin.apps.length) {
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT!);
+  // if (!admin.apps.length) {
+  //   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT!);
 
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
-  }
-  adminAvailable = true;
+  //   admin.initializeApp({
+  //     credential: admin.credential.cert(serviceAccount),
+  //   });
+  // }
+  // adminAvailable = true;
+  if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    }),
+  });
+}
+adminAvailable = true;
 } catch (error) {
   console.error("Firebase Admin init error:", error);
 }
@@ -138,7 +148,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("FCM send error:", error);
     return NextResponse.json(
-      { error: (error as Error).message || "FCM send failed." },
+      { error: (error as Error).message || "FCM send failed. firebase admin not initialized" },
       { status: 500 }
     );
   }

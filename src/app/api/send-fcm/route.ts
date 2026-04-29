@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import admin from "firebase-admin";
 
-//const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT;
+const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT;
 //const fcmServerKey = process.env.FCM_SERVER_KEY;
 // let adminAvailable = false;
 
@@ -17,24 +17,25 @@ import admin from "firebase-admin";
 let adminAvailable = false;
 
 try {
-  // if (!admin.apps.length) {
-  //   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT!);
-
-  //   admin.initializeApp({
-  //     credential: admin.credential.cert(serviceAccount),
-  //   });
-  // }
-  // adminAvailable = true;
   if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-    }),
-  });
-}
-adminAvailable = true;
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT!);
+
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+  }
+  adminAvailable = true;
+//   if (!admin.apps.length) {
+//      const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT!);
+//   admin.initializeApp({
+//     credential: admin.credential.cert({
+//       projectId: process.env.FIREBASE_PROJECT_ID,
+//       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+//       privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+//     }),
+//   });
+// }
+// adminAvailable = true;
 } catch (error) {
   console.error("Firebase Admin init error:", error);
 }
